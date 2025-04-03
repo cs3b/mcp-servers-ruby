@@ -7,7 +7,6 @@
 #   The rest of dependencies will be installed automatically.
 #
 # Usage: ruby clipboard_copy_paste.rb [options]
-#   -l, --log FILE         Path to log file (default: ./logs/mcp-server.log)
 #   -h, --help             Show help message
 #
 # Claude Desktop Setup:
@@ -16,21 +15,16 @@
 # {
 #   "mcpServers": {
 #     "clipboard-helper": {
-#       "name": "Clipboard Helper",
+#       "name": "Clipboard Helper", 
 #       "transport": "stdio",
 #       "command": "/full-path-to/ruby",
 #       "args": [
-#         "/full-path-to/server-directory/clipboard_copy_paste.rb",
-#         "--log",
-#         "/full-path-to/server-directory/logs/claude-run.log"
+#         "/full-path-to/server-directory/clipboard_copy_paste.rb"
 #       ],
 #       "workingDirectory": "/full-path-to/server-directory"
 #     }
 #   }
 # }
-#
-# Configuration:
-#   MCP_LOG_FILE - Path to log file (default: ./logs/mcp-server.log)
 #
 
 require "bundler/inline"
@@ -53,10 +47,6 @@ require "optparse"
 
 opts = OptionParser.new do |opts|
   opts.banner = "Usage: #{$0} [options]"
-
-  opts.on("-l", "--log FILE", String, "Path to log file (default: ./logs/mcp-server.log)") do |file|
-    # FastMcp::Logger.log_path = file
-  end
 
   opts.on("-h", "--help", "Show this help message") do
     puts opts

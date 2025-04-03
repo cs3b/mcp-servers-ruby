@@ -40,16 +40,15 @@ The `mcp_install` script provides commands for installing MCP servers for differ
 
 ```bash
 # For Claude Desktop
-./mcp_install claude_desktop SERVER_PATH [BASE_PATH] [LOG_PATH]
+./mcp_install claude_desktop SERVER_PATH [BASE_PATH]
 
 # For Claude Code
-./mcp_install claude_code SERVER_PATH [BASE_PATH] [LOG_PATH]
+./mcp_install claude_code SERVER_PATH [BASE_PATH]
 ```
 
 Parameters:
 - `SERVER_PATH`: Path to the MCP server implementation
 - `BASE_PATH`: Base directory for the server (defaults to current directory)
-- `LOG_PATH`: Custom log file location (optional)
 
 Example:
 ```bash
@@ -57,7 +56,6 @@ Example:
 ```
 
 For Claude Desktop, the installer will:
-1. Create necessary directories for logs
-2. Generate server configuration
-3. Update Claude Desktop's configuration file (if found)
-4. Display the generated configuration for manual installation if needed
+1. Generate server configuration
+2. Update Claude Desktop's configuration file (if found)
+3. Display the generated configuration for manual installation if needed

@@ -5,16 +5,13 @@ require "fileutils"
 require "json"
 
 class Install < Thor
-  desc "claude_desktop SERVER_PATH BASE_PATH LOG_PATH", "Install MCP server for Claude Desktop"
-  def claude_desktop(server_path, base_path = ".", log_path = nil)
+  desc "claude_desktop SERVER_PATH BASE_PATH", "Install MCP server for Claude Desktop"
+  def claude_desktop(server_path, base_path = ".")
     # Get absolute paths
     base_path = File.expand_path(base_path)
     server_path = File.expand_path(server_path, base_path)
     base_name = File.basename(server_path, ".*")
     ruby_path = File.join(RbConfig::CONFIG['bindir'], RbConfig::CONFIG['ruby_install_name'])
-
-    log_path = log_path ? File.expand_path(log_path, base_path) : File.expand_path("logs/claude-desktop-#{base_name}.log", base_path)
-    FileUtils.mkdir_p(File.dirname(log_path)) unless File.dirname(log_path)
 
     # Create server config
     server_config = {
@@ -24,9 +21,7 @@ class Install < Thor
           "transport" => "stdio",
           "command" => ruby_path,
           "args" => [
-            server_path,
-            "--log",
-            log_path
+            server_path
           ],
           "workingDirectory" => base_path
         }

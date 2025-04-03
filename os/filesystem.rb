@@ -8,7 +8,6 @@
 #
 # Usage: ruby filesystem_operations.rb [options]
 #   -d, --directory DIR     Base directory for filesystem operations (default: ./filesystem_workspace)
-#   -l, --log FILE         Path to log file (default: ./logs/filesystem-ops.log)
 #   -h, --help             Show help message
 #
 # Claude Desktop Setup:
@@ -23,9 +22,7 @@
 #       "args": [
 #         "/full-path-to/server-directory/filesystem_operations.rb",
 #         "--directory",
-#         "/full-path-to-base-directory/filesystem_workspace",
-#         "--log",
-#         "/full-path-to/server-directory/logs/filesystem-ops.log"
+#         "/full-path-to-base-directory/filesystem_workspace"
 #       ],
 #       "workingDirectory": "/full-path-to/server-directory"
 #     }
@@ -34,7 +31,6 @@
 #
 # Configuration:
 #   FILESYSTEM_BASE_DIR - Base directory for filesystem operations (default: ./filesystem_workspace)
-#   MCP_LOG_FILE       - Path to log file (default: ./logs/filesystem-ops.log)
 #
 
 require "bundler/inline"
@@ -78,10 +74,6 @@ OptionParser.new do |opts|
   opts.on("-d", "--directory DIR", "Base directory for filesystem operations (default: ./filesystem_workspace)") do |dir|
     Config.instance.base_dir = dir
   end
-
-  # opts.on("-l", "--log FILE", String, "Path to log file (default: ./logs/filesystem-ops.log)") do |file|
-  #   # FastMcp::Logger.log_path = File.expand_path(file)
-  # end
 
   opts.on("-h", "--help", "Show this help message") do
     puts opts
