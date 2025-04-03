@@ -13,6 +13,19 @@ When using Claude AI to generate similar tools, the typical cost ranges from $0.
 ## Available Tools
 
 ### Operating System Utilities
+### Media Server Utilities
+
+- [Media Transcription](media/transcribe.md) - Handles media processing operations:
+  - Audio file uploading and management
+  - WAV transcoding using ffmpeg
+  - Audio transcription via Whisper
+  - Progress tracking and notifications
+  
+- [Content Summarization](media/summarize_content.rb) - Intelligent content analysis:
+  - Transcript/article summarization
+  - Multi-level prompt generation
+  - Content comparison and delta analysis
+  - Bias detection and insights extraction
 
 - [Filesystem Operations](os/filesystem.rb) - Handles file system operations including:
   - Reading files
@@ -33,6 +46,12 @@ The repository provides a Thor-based installer script for setting up MCP servers
 ```bash
 bundle install
 ```
+The media servers require additional dependencies:
+
+- ffmpeg (for audio transcoding)
+- Whisper (for speech transcription)
+- Ruby >= 3.0
+- fast-mcp gem (1.1.0 or later)
 
 ### Installing MCP Servers
 
@@ -49,6 +68,12 @@ The `mcp_install` script provides commands for installing MCP servers for differ
 Parameters:
 - `SERVER_PATH`: Path to the MCP server implementation
 - `BASE_PATH`: Base directory for the server (defaults to current directory)
+### Prompt Templates
+The media servers use XML-based prompt templates located in `media/prompts/`:
+
+- `summarize.transcript.xml.erb` - For transcript analysis
+- `whats.new.assistant.xml.erb` - For content comparison (assistant)
+- `whats.new.user.xml.erb` - For content comparison (user)
 
 Example:
 ```bash

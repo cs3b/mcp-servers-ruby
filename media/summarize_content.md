@@ -122,6 +122,3 @@ It is built in compliance with the [Model Context Protocol (MCP) 2025-03-26 spec
 - Server uses `$/progress` notifications when processing large or complex documents.
 
 ---
-
-
-{"jsonrpc":"2.0","id":2,"method":"prompts/get","params":{"name":"SummarizeTranscriptPrompt","arguments":{"code":"def hello():\n    print('world')"}}}

@@ -224,5 +224,3 @@ ruby mcp_server.rb --dir ./workspace --port 9292 --whisper-path ./bin/whisper --
 - All tools and resources are registered as per MCP 2025-03-26.
 
 ---
-
-End of Document.
