@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+
+require "thor"
+require "fileutils"
+require "json"
+
+class Install < Thor
+  desc "claude_desktop SERVER_PATH BASE_PATH LOG_PATH", "Install MCP server for Claude Desktop"
+  def claude_desktop(server_path, base_path = ".", log_path = nil)
+    # Get absolute paths
+    base_path = File.expand_path(base_path)
+    server_path = File.expand_path(server_path, base_path)
+    base_name = File.basename(server_path, ".*")
+    ruby_path = File.join(RbConfig::CONFIG['bindir'], RbConfig::CONFIG['ruby_install_name'])
+
+    log_path = log_path ? File.expand_path(log_path, base_path) : File.expand_path("logs/claude-desktop-#{base_name}.log", base_path)
+    FileUtils.mkdir_p(File.dirname(log_path)) unless File.dirname(log_path)
+
+    # Create server config
+    server_config = {
+      "mcpServers" => {
+        base_name => {
+          "name" => "Clipboard Helper",
+          "transport" => "stdio",
+          "command" => ruby_path,
+          "args" => [
+            server_path,
+            "--log",
+            log_path
+          ],
+          "workingDirectory" => base_path
+        }
+      }
+    }
+
+    # Get Claude Desktop config path
+    config_path = File.expand_path("~/Library/Application Support/Claude/claude_desktop_config.json")
+
+    if File.exist?(config_path)
+      # Update existing config
+      existing_config = JSON.parse(File.read(config_path))
+      existing_config["mcpServers"] ||= {}
+      existing_config["mcpServers"].merge!(server_config["mcpServers"])
+      config_json = JSON.pretty_generate(existing_config)
+      File.write(config_path, config_json)
+      puts "✅ MCP Server installed for Claude Desktop"
+      puts "Config written to: #{config_path}"
+      puts "Server config:"
+    else
+      puts "👷🏽 MCP Server config json prepared, please install manually"
+    end
+
+    puts JSON.pretty_generate(server_config)
+
+  end
+
+  desc "claude_code SERVER_PATH BASE_PATH LOG_PATH", "Install MCP server for Claude Code"
+  def claude_code(server_path, base_path = ".", log_path = nil)
+    # Similar implementation for Claude Code...
+  end
+end
+
+Install.start(ARGV)
