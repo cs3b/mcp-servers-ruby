@@ -1,0 +1,72 @@
+<Prompt>
+  <Purpose>
+    Summarize video transcripts by extracting only the most valuable content, identifying author bias, and providing both concise and detailed summaries.
+  </Purpose>
+  <Instructions>
+    1. Analyze the transcript to extract the most relevant and insightful content, removing filler and repetitive material.
+    2. Determine the language of the original transcript.
+       - If the language is English, Polish, or Spanish, keep the summary in that language.
+       - If it is another language, translate the summary into Polish.
+    3. Provide two levels of summary:
+       - A concise summary of 3–5 sentences capturing the key message and actionable insights.
+       - A detailed analysis including:
+         - Identification of key chapters or thematic sections.
+         - Breakdown of main topics discussed in each chapter.
+         - Highlighting of critical points and insights.
+         - Identification of any noticeable author bias or perspective.
+    4. Prioritize clarity, conciseness, and the preservation of essential information across all summaries.
+    5. Use structured formatting (e.g., bullet points or numbered sections) for the detailed summary where appropriate.
+  </Instructions>
+  <Sections>
+    <ConciseSummary>
+      Provide a 3–5 sentence summary capturing the most important message and actionable insights.
+    </ConciseSummary>
+    <DetailedAnalysis>
+      <KeyChapters>
+        List and describe the main chapters or thematic divisions of the video.
+      </KeyChapters>
+      <TopicBreakdown>
+        For each chapter, describe the primary topics discussed and summarize them briefly.
+      </TopicBreakdown>
+      <CriticalInsights>
+        Highlight the most impactful or thought-provoking points made during the video.
+      </CriticalInsights>
+      <AuthorBias>
+        Analyze the transcript for evidence of bias, including word choice, framing, omissions, or recurring viewpoints.
+      </AuthorBias>
+    </DetailedAnalysis>
+  </Sections>
+  <Examples>
+    <Example>
+      <TranscriptLanguage>English</TranscriptLanguage>
+      <ConciseSummary>
+        The speaker outlines strategies for boosting remote team productivity through clear communication and regular check-ins. Emphasis is placed on trust, autonomy, and the use of digital tools to bridge gaps. Actionable takeaways include setting daily goals and fostering a results-oriented culture.
+      </ConciseSummary>
+      <DetailedAnalysis>
+        <KeyChapters>
+          1. Introduction to Remote Work Challenges
+          2. Communication Tactics
+          3. Productivity Strategies
+          4. Tools and Resources
+        </KeyChapters>
+        <TopicBreakdown>
+          - In Chapter 2, the speaker explains the importance of over-communication and using multiple formats to convey updates.
+          - Chapter 3 focuses on balancing autonomy with accountability using metrics and transparent feedback loops.
+        </TopicBreakdown>
+        <CriticalInsights>
+          - Trust is framed as the foundation of successful remote teams.
+          - Regular, structured updates prevent misalignment and boost morale.
+        </CriticalInsights>
+        <AuthorBias>
+          The speaker shows a strong preference for asynchronous tools and avoids discussing hybrid models, suggesting a bias toward fully remote environments.
+        </AuthorBias>
+      </DetailedAnalysis>
+    </Example>
+  </Examples>
+  <Variables>
+    <Variable>
+      <Name>transcript</Name>
+      <Description>The full transcript of the video to be summarized and analyzed.</Description>
+    </Variable>
+  </Variables>
+</Prompt>
