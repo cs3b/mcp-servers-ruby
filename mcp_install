@@ -4,6 +4,11 @@ require "thor"
 require "fileutils"
 require "json"
 
+CONFIG_TEMPLATE = {
+  "mcpServers" => {}
+}.freeze
+
+
 class Install < Thor
   desc "claude_desktop SERVER_PATH BASE_PATH", "Install MCP server for Claude Desktop"
   def claude_desktop(server_path, base_path = ".")
@@ -31,28 +36,87 @@ class Install < Thor
     # Get Claude Desktop config path
     config_path = File.expand_path("~/Library/Application Support/Claude/claude_desktop_config.json")
 
-    if File.exist?(config_path)
-      # Update existing config
-      existing_config = JSON.parse(File.read(config_path))
-      existing_config["mcpServers"] ||= {}
-      existing_config["mcpServers"].merge!(server_config["mcpServers"])
-      config_json = JSON.pretty_generate(existing_config)
-      File.write(config_path, config_json)
-      puts "✅ MCP Server installed for Claude Desktop"
-      puts "Config written to: #{config_path}"
-      puts "Server config:"
-    else
-      puts "👷🏽 MCP Server config json prepared, please install manually"
-    end
+    # Create config directory if it doesn't exist
+    FileUtils.mkdir_p(File.dirname(config_path))
+
+    # Load or create config
+    existing_config = self.class.load_or_create_config(config_path)
+
+    # Update config
+    existing_config["mcpServers"].merge!(server_config["mcpServers"])
+    config_json = JSON.pretty_generate(existing_config)
+
+    # Write config
+    File.write(config_path, config_json)
+    puts "✅ MCP Server installed for Claude Desktop"
+    puts "Config written to: #{config_path}"
+    puts "Server config:"
 
     puts JSON.pretty_generate(server_config)
 
   end
 
+  desc "windsurf SERVER_PATH BASE_PATH", "Install MCP server for Windsurf"
+  def windsurf(server_path, base_path = ".")
+    # Get absolute paths
+    base_path = File.expand_path(base_path)
+    server_path = File.expand_path(server_path, base_path)
+    base_name = File.basename(server_path, ".*")
+    ruby_path = File.join(RbConfig::CONFIG['bindir'], RbConfig::CONFIG['ruby_install_name'])
+
+    # Create server config
+    server_config = {
+      "mcpServers" => {
+        base_name => {
+          "name" => "Clipboard Helper",
+          "transport" => "stdio",
+          "command" => ruby_path,
+          "args" => [
+            server_path
+          ],
+          "workingDirectory" => base_path
+        }
+      }
+    }
+
+    # Get Windsurf config path
+    config_path = File.expand_path("~/.codeium/windsurf/mcp_config.json")
+
+    # Create config directory if it doesn't exist
+    FileUtils.mkdir_p(File.dirname(config_path))
+
+    existing_config = self.class.load_or_create_config(config_path)
+
+    # Update config
+    existing_config["mcpServers"].merge!(server_config["mcpServers"])
+    config_json = JSON.pretty_generate(existing_config)
+
+    # Write config
+    File.write(config_path, config_json)
+    puts "✅ MCP Server installed for Windsurf"
+    puts "Config written to: #{config_path}"
+    puts "Server config:"
+
+    puts JSON.pretty_generate(server_config)
+  end
   desc "claude_code SERVER_PATH BASE_PATH LOG_PATH", "Install MCP server for Claude Code"
   def claude_code(server_path, base_path = ".", log_path = nil)
     # Similar implementation for Claude Code...
   end
+
+  def self.load_or_create_config(config_path)
+    return CONFIG_TEMPLATE.dup unless File.exist?(config_path)
+
+    content = File.read(config_path).strip
+    return CONFIG_TEMPLATE.dup if content.empty?
+
+    begin
+      JSON.parse(content)
+    rescue JSON::ParserError
+      CONFIG_TEMPLATE.dup
+    end
+  end
+
 end
 
 Install.start(ARGV)
