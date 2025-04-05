@@ -48,7 +48,7 @@ require "bundler/inline"
 
 gemfile do
   source "https://rubygems.org"
-  gem "fast-mcp", "1.1.0"
+  gem "fast-mcp", "1.1.1", path: File.expand_path('~/Projects/windsurf/fast-mcp')
   gem "rack"
 end
 
