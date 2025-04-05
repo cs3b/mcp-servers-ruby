@@ -15,7 +15,7 @@
 # {
 #   "mcpServers": {
 #     "clipboard-helper": {
-#       "name": "Clipboard Helper", 
+#       "name": "Clipboard Helper",
 #       "transport": "stdio",
 #       "command": "/full-path-to/ruby",
 #       "args": [
@@ -31,12 +31,13 @@ require "bundler/inline"
 
 gemfile do
   source "https://rubygems.org"
-  gem "fast-mcp", "1.0.0" #, path: File.expand_path("../../", __FILE__)
+  gem "fast-mcp", "1.1.1", path: File.expand_path('~/Projects/windsurf/fast-mcp')
   gem "pry"
   gem "rack" # looks like rack is running depency, even when we are using only stdio
 end
 
 require "fast_mcp"
+require "json"
 
 # Parse command line arguments
 require "optparse"
@@ -60,11 +61,11 @@ class ClipboardPaste < FastMcp::Tool
   def call
     case RUBY_PLATFORM
     when /darwin/
-      `pbpaste`.strip
+      `pbpaste`.force_encoding("UTF-8").scrub!.strip
     when /linux/
-      `xclip -selection clipboard -o 2>/dev/null || xsel -o -b 2>/dev/null`.strip
+      `xclip -selection clipboard -o 2>/dev/null || xsel -o -b 2>/dev/null`.force_encoding("UTF-8").scrub!.strip
     when /mswin|mingw|cygwin/
-      `powershell -command "Get-Clipboard" 2>/dev/null`.strip
+      `powershell -command "Get-Clipboard" 2>/dev/null`.force_encoding("UTF-8").scrub!.strip
     else
       raise "Platform #{RUBY_PLATFORM} not supported for clipboard operations"
     end
