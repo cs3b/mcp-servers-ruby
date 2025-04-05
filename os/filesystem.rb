@@ -37,7 +37,7 @@ require "bundler/inline"
 
 gemfile do
   source "https://rubygems.org"
-  gem "fast-mcp", "1.0.0" #, path: File.expand_path("../../", __FILE__)
+  gem "fast-mcp", "1.1.1", path: File.expand_path('~/Projects/windsurf/fast-mcp'
   gem "rack" # looks like rack is running dependency, even when we are using only stdio
 end
 
