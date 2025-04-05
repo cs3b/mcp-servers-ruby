@@ -18,6 +18,9 @@ class Install < Thor
     base_name = File.basename(server_path, ".*")
     ruby_path = File.join(RbConfig::CONFIG['bindir'], RbConfig::CONFIG['ruby_install_name'])
 
+    # Extract environment variables from server file
+    env_vars = self.class.extract_env_variables(server_path)
+    
     # Create server config
     server_config = {
       "mcpServers" => {
@@ -32,6 +35,9 @@ class Install < Thor
         }
       }
     }
+    
+    # Add environment variables if any were found
+    server_config["mcpServers"][base_name]["env"] = env_vars unless env_vars.empty?
 
     # Get Claude Desktop config path
     config_path = File.expand_path("~/Library/Application Support/Claude/claude_desktop_config.json")
@@ -101,9 +107,73 @@ class Install < Thor
   end
   desc "claude_code SERVER_PATH BASE_PATH LOG_PATH", "Install MCP server for Claude Code"
   def claude_code(server_path, base_path = ".", log_path = nil)
-    # Similar implementation for Claude Code...
+    # Get absolute paths
+    base_path = File.expand_path(base_path)
+    server_path = File.expand_path(server_path, base_path)
+    base_name = File.basename(server_path, ".*")
+    ruby_path = File.join(RbConfig::CONFIG['bindir'], RbConfig::CONFIG['ruby_install_name'])
+
+    # Extract environment variables from server file
+    env_vars = self.class.extract_env_variables(server_path)
+    
+    # Create server config
+    server_config = {
+      "mcpServers" => {
+        base_name => {
+          "name" => "Clipboard Helper",
+          "transport" => "stdio",
+          "command" => ruby_path,
+          "args" => [
+            server_path
+          ],
+          "workingDirectory" => base_path
+        }
+      }
+    }
+    
+    # Add environment variables if any were found
+    server_config["mcpServers"][base_name]["env"] = env_vars unless env_vars.empty?
+    
+    # Add log path if provided
+    if log_path
+      log_path = File.expand_path(log_path)
+      server_config["mcpServers"][base_name]["logPath"] = log_path
+    end
+
+    # Get Claude Code config path
+    config_path = File.expand_path("~/.config/claude-code/mcp_config.json")
+
+    # Create config directory if it doesn't exist
+    FileUtils.mkdir_p(File.dirname(config_path))
+
+    # Load or create config
+    existing_config = self.class.load_or_create_config(config_path)
+
+    # Update config
+    existing_config["mcpServers"].merge!(server_config["mcpServers"])
+    config_json = JSON.pretty_generate(existing_config)
+
+    # Write config
+    File.write(config_path, config_json)
+    puts "✅ MCP Server installed for Claude Code"
+    puts "Config written to: #{config_path}"
+    puts "Server config:"
+
+    puts JSON.pretty_generate(server_config)
   end
 
+  def self.extract_env_variables(server_path)
+    return {} unless File.exist?(server_path)
+
+    env_vars = {}
+    File.readlines(server_path).each do |line|
+      if line.match?(/^\s*ENV\[['"](.+)['"]\]\s*=\s*['"](.+)['"]/)
+        matches = line.match(/^\s*ENV\[['"](.+)['"]\]\s*=\s*['"](.+)['"]/)
+        env_vars[matches[1]] = matches[2] if matches && matches[1] && matches[2]
+      end
+    end
+    env_vars
+  end
   def self.load_or_create_config(config_path)
     return CONFIG_TEMPLATE.dup unless File.exist?(config_path)
 
